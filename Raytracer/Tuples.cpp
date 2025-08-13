@@ -1,142 +1,107 @@
 #include "Tuples.hpp"
 
-tuple::tuple(float X, float Y, float Z, float W) : x{ X }, y{ Y }, z{ Z }, w{ W } {}
+TestTuple::TestTuple() : Tuple4<TestTuple>(0.0, 0.0, 0.0, 0.0) {}
+TestTuple::TestTuple(double X, double Y, double Z, double W) : Tuple4<TestTuple>(X, Y, Z, W) {}
 
-void tuple::operator=(const tuple& other)
-{
-	x = other.x;
-	y = other.y;
-	z = other.z;
-	w = other.w;
-}
+Point4::Point4() : Tuple4<Point4>(0.0, 0.0, 0.0, 1.0) {}
+Point4::Point4(double X, double Y, double Z) : Tuple4<Point4>(X, Y, Z, 1.0) {}
 
-bool tuple::operator==(const tuple& other) const
-{
-	return is_equal(x, other.x) && is_equal(y, other.y) && is_equal(z, other.z) && is_equal(w, other.w);
-}
+Vector4::Vector4() : Tuple4<Vector4>(0.0, 0.0, 0.0, 0.0) {}
+Vector4::Vector4(double X, double Y, double Z) : Tuple4<Vector4>(X, Y, Z, 0.0) {}
 
-tuple tuple::operator+(const tuple& other) const
+Color4::Color4() : Tuple4<Color4>(0.0, 0.0, 0.0, 0.0) {}
+
+
+//=== POINT === 
+Point4 Point4::operator+(const Vector4& other) const
 {
-	tuple result;
-	result.x += x + other.x;
-	result.y += y + other.y;
-	result.z += z + other.z;
-	result.w += w + other.w;
+	Point4 result;
+
+	result.x = x + other.x;
+	result.y = y + other.y;
+	result.z = z + other.z;
 
 	return result;
 }
 
-tuple tuple::operator+=(const tuple& other)
+Point4 Point4::operator-(const Vector4& other) const
 {
-	*this = *this + other;
-	return *this;
-}
+	Point4 result;
 
-tuple tuple::operator-(const tuple& other) const
-{
-	tuple result;
-	result.x += x - other.x;
-	result.y += y - other.y;
-	result.z += z - other.z;
-	result.w += w - other.w;
+	result.x = x - other.x;
+	result.y = y - other.y;
+	result.z = z - other.z;
 
 	return result;
 }
 
-tuple tuple::operator*(float factor) const
+Vector4 Point4::operator-(const Point4& other) const
 {
-	tuple result;
-	result.x = x * factor;
-	result.y = y * factor;
-	result.z = z * factor;
-	result.w = w * factor;
-	
-	return result;
-}
+	Vector4 result;
 
-tuple operator*(float lhs, const tuple& rhs)
-{
-	return rhs * lhs;
-}
-
-tuple tuple::operator/(float factor) const
-{
-	tuple result;
-	result.x = x / factor;
-	result.y = y / factor;
-	result.z = z / factor;
-	result.w = w / factor;
+	result.x = x - other.x;
+	result.y = y - other.y;
+	result.z = z - other.z;
 
 	return result;
 }
 
-tuple tuple::operator-()
+//=== VECTOR === 
+Point4 Vector4::point_at(double t)
 {
-	x = -x;
-	y = -y;
-	z = -z;
-	w = -w;
-	return *this;
+	return Point4{ this->x * t, this->y * t, this->z * t };
 }
 
-tuple tuple::point_at(float t) 
+//=== COLOR === 
+Color4 Color4::saturate(double lower, double upper)
 {
-	return *this * t;
-}
-
-tuple tuple::saturate(float lower, float upper) const
-{
-	tuple res{ *this };
+	Color4 res{ this->x, this->y, this->z };
 	if (res.x < lower) res.x = lower;
 	if (res.x > upper) res.x = upper;
-		   			      
+
 	if (res.y < lower) res.y = lower;
 	if (res.y > upper) res.y = upper;
-		   			      
+
 	if (res.z < lower) res.z = lower;
 	if (res.z > upper) res.z = upper;
-		   			      
-	if (res.w < lower) res.w = lower;
-	if (res.w > upper) res.w = upper;
 
 	return res;
 }
 
-float magnitude(const tuple& vect)
+
+double magnitude(const Vector4& vect)
 {
-	return sqrt(pow(vect.x, 2.0f) + pow(vect.y, 2.0f) + pow(vect.z, 2.0f) + pow(vect.w, 2.0f));
+	return sqrt(pow(vect.x, 2.0) + pow(vect.y, 2.0) + pow(vect.z, 2.0));
 }
 
-tuple normalize(const tuple& vect)
+Vector4 normalize(const Vector4& vect)
 {
-	return vect / magnitude(vect);
+	double mag = magnitude(vect);
+	return Vector4{ vect.x / mag, vect.y / mag, vect.z / mag };
 }
 
-float dot(const tuple& lhs, const tuple& rhs)
+double dot(const Vector4& lhs, const Vector4& rhs)
 {
 	return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z + lhs.w * rhs.w;
 }
 
-tuple cross(const tuple& lhs, const tuple& rhs)
+Vector4 cross(const Vector4& lhs, const Vector4& rhs)
 {
-	return vector(	lhs.y * rhs.z - lhs.z * rhs.y, 
-					lhs.z * rhs.x - lhs.x * rhs.z, 
-					lhs.x * rhs.y - lhs.y * rhs.x);
+	return Vector4{ lhs.y * rhs.z - lhs.z * rhs.y, lhs.z * rhs.x - lhs.x * rhs.z, lhs.x * rhs.y - lhs.y * rhs.x };
 }
 
-tuple hadamard(const tuple& lhs, const tuple& rhs)
-{ 
-	return tuple(lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z, lhs.w * rhs.w);
-}
-
-tuple reflect(const tuple& eye, const tuple& nm)
+Vector4 hadamard(const Vector4& lhs, const Vector4& rhs)
 {
-	return eye - nm * 2 * dot(eye, nm);
+	return Vector4{ lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z };
 }
 
-tuple point(float x, float y, float z) { return tuple(x, y, z, 1.0f); }
-tuple vector(float x, float y, float z) { return tuple(x, y, z, 0.0f); }
-tuple color(float x, float y, float z) { return tuple(x, y, z, 0.0f); }
+Color4 hadamard(const Color4& lhs, const Color4& rhs)
+{
+	return Color4{ lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z };
+}
 
-bool is_point(const tuple& t) { return is_equal(t.w, 1.0f); }
-bool is_vector(const tuple& t) { return is_equal(t.w, 0.0f); }
+Vector4 reflect(const Vector4& eye, const Vector4& nm)
+{
+	double d2 = 2 * dot(eye, nm);
+	return Vector4{ eye.x - nm.x * d2, eye.y - nm.y * d2, eye.z - nm.z * d2 };
+}

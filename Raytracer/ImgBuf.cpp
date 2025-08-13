@@ -53,9 +53,9 @@ void ImgBuf::writeBMP(const std::string& folder_path) const {
     for (int y = m_height - 1; y >= 0; --y) {
         for (int x = 0; x < m_width; ++x) {
             int i = (m_height - 1 - y) * rowSize + x * 3;
-            pixelData[i + 0] = m_img_data[y][x].z * 255;  // Blue
-            pixelData[i + 1] = m_img_data[y][x].y * 255;  // Green
-            pixelData[i + 2] = m_img_data[y][x].x * 255;  // Red
+            pixelData[i + 0] = static_cast<int>(m_img_data[y][x].z * 255);  // Blue
+            pixelData[i + 1] = static_cast<int>(m_img_data[y][x].y * 255);  // Green
+            pixelData[i + 2] = static_cast<int>(m_img_data[y][x].x * 255);  // Red
         }
     }
 
@@ -72,35 +72,79 @@ void ImgBuf::writeBMP(const std::string& folder_path) const {
 
 ImgBuf::ImgBuf(int width, int height) : m_width { width }, m_height{ height } 
 {
-    m_img_data = std::vector<std::vector<tuple>>(height, std::vector<tuple>(width, color(0, 0, 0)));
+    m_img_data = std::vector<std::vector<Color4>>(height, std::vector<Color4>(width, Color4{ 0.0, 0.0, 0.0 }));
 }
 
-void ImgBuf::write_pixel(int width, int height, tuple color)
+void ImgBuf::write_pixel(int width, int height, Color4 color)
 {
     if(height >= 0 && height < m_height && width >=0 && width < m_width)
         m_img_data[height][width] = color;
 }
 
-tuple ImgBuf::pixel_at(int width, int height)
+Color4 ImgBuf::pixel_at(int width, int height)
 {
     return m_img_data[height][width];
 }
 
-ImgBuf render(Camera& c, world& w)
+void hide_console_cursor() {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(hConsole, &cursorInfo);
+    cursorInfo.bVisible = FALSE;
+    SetConsoleCursorInfo(hConsole, &cursorInfo);
+}
+
+void show_console_cursor() {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(hConsole, &cursorInfo);
+    cursorInfo.bVisible = TRUE;
+    SetConsoleCursorInfo(hConsole, &cursorInfo);
+}
+
+ImgBuf render(Camera& c, World& w, int max_bounces)
 {
     ImgBuf canvas{ c.m_hsize, c.m_vsize };
+    std::atomic<int> rows_done{ 0 };
+    std::mutex cout_mutex;
 
     std::vector<int> indices(canvas.m_height);
     std::iota(indices.begin(), indices.end(), 0);
 
+    hide_console_cursor();
     std::for_each(std::execution::par, indices.begin(), indices.end(), [&](int j)
     {
         for (int i = 0; i < canvas.m_width; i++)
         {
-            ray r{ c.ray_for_pixel(i, j) };
-            canvas.write_pixel(i, j, color_at(w, r).saturate(0.0f, 1.0f));
+            Ray r{ c.ray_for_pixel(i, j) };
+            canvas.write_pixel(i, j, color_at(w, r, max_bounces).saturate(0.0, 1.0));
+        }
+        int done = ++rows_done;
+        float percent = (100.0f * done) / canvas.m_height;
+        {
+            std::lock_guard<std::mutex> lock(cout_mutex);
+            std::cout << "\rRendering: " << std::fixed << std::setprecision(1) << percent << "% completed" << std::flush;
         }
     });
+    show_console_cursor();
+
+    std::cout << "\nDone!\n";
+
+    return canvas;
+}
+
+ImgBuf test_render(Camera& c, World& w, int max_bounces)
+{
+    ImgBuf canvas{ c.m_hsize, c.m_vsize };
+
+        for (int j = 0; j < canvas.m_height; j++)
+        {
+            for (int i = 0; i < canvas.m_width; i++)
+            {
+                Ray r{ c.ray_for_pixel(i, j) };
+                canvas.write_pixel(i, j, color_at(w, r, max_bounces).saturate(0.0, 1.0));
+            }
+        }
 
     return canvas;
 }

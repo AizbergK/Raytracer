@@ -15,7 +15,7 @@ bool mat2x2::operator!=(const mat2x2& other) const
     return !(*this == other);
 }
 
-float mat2x2::determinant() const
+double mat2x2::determinant() const
 {
     return m_data[0][0] * m_data[1][1] - m_data[0][1] * m_data[1][0];
 }
@@ -62,24 +62,24 @@ mat2x2 mat3x3::submatrix(int row, int col) const
     return result;
 }
 
-float mat3x3::minor(int row, int col) const
+double mat3x3::minor(int row, int col) const
 {
     mat2x2 temp = this->submatrix(row, col);
     return temp.determinant();
 }
 
-float mat3x3::cofactor(int row, int col) const
+double mat3x3::cofactor(int row, int col) const
 {
-    float det = this->minor(row, col);
+    double det = this->minor(row, col);
     if ((row + col) % 2 == 0)
         return det;
     else
         return -det;
 }
 
-float mat3x3::determinant() const
+double mat3x3::determinant() const
 {
-    float result = 0.0f;
+    double result = 0.0;
     for (int i = 0; i < 3; i++)
     {
         result += this->m_data[0][i] * this->cofactor(0, i);
@@ -112,33 +112,6 @@ mat4x4 mat4x4::operator*(const mat4x4& other) const
             for (int k = 0; k < 4; k++)
                 result.m_data[i][j] += this->m_data[i][k] * other.m_data[k][j];
                 
-    return result;
-}
-
-tuple mat4x4::operator*(const tuple& other) const
-{
-    tuple result;
-
-    result.x += this->m_data[0][0] * other.x;
-    result.x += this->m_data[0][1] * other.y;
-    result.x += this->m_data[0][2] * other.z;
-    result.x += this->m_data[0][3] * other.w;
-
-    result.y += this->m_data[1][0] * other.x;
-    result.y += this->m_data[1][1] * other.y;
-    result.y += this->m_data[1][2] * other.z;
-    result.y += this->m_data[1][3] * other.w;
-
-    result.z += this->m_data[2][0] * other.x;
-    result.z += this->m_data[2][1] * other.y;
-    result.z += this->m_data[2][2] * other.z;
-    result.z += this->m_data[2][3] * other.w;
-
-    result.w += this->m_data[3][0] * other.x;
-    result.w += this->m_data[3][1] * other.y;
-    result.w += this->m_data[3][2] * other.z;
-    result.w += this->m_data[3][3] * other.w;
-
     return result;
 }
 
@@ -180,24 +153,24 @@ mat3x3 mat4x4::submatrix(int row, int col) const
     return result;
 }
 
-float mat4x4::minor(int row, int col) const
+double mat4x4::minor(int row, int col) const
 {
     mat3x3 temp = this->submatrix(row, col);
     return temp.determinant();
 }
 
-float mat4x4::cofactor(int row, int col) const
+double mat4x4::cofactor(int row, int col) const
 {
-    float det = this->minor(row, col);
+    double det = this->minor(row, col);
     if ((row + col) % 2 == 0)
         return det;
     else
         return -det;
 }
 
-float mat4x4::determinant() const
+double mat4x4::determinant() const
 {
-    float result = 0.0f;
+    double result = 0.0;
     for (int i = 0; i < 4; i++)
     {
         result += this->m_data[0][i] * this->cofactor(0, i);
@@ -210,8 +183,8 @@ mat4x4 mat4x4::inverse() const
 {
     mat4x4 result;
 
-    float det = this->determinant();
-    if (is_equal(det, 0.0f)) throw;
+    double det = this->determinant();
+    if (is_equal(det, 0.0)) throw;
 
     for(int i = 0; i < 4; i++)
     {
@@ -224,7 +197,7 @@ mat4x4 mat4x4::inverse() const
     return result;
 }
 
-mat4x4 translation(float x, float y , float z)
+mat4x4 translation(double x, double y , double z)
 {
     mat4x4 result = i4x4;
     result.m_data[0][3] = x;
@@ -234,7 +207,7 @@ mat4x4 translation(float x, float y , float z)
     return result;
 }
 
-mat4x4 scaling(float x, float y, float z)
+mat4x4 scaling(double x, double y, double z)
 {
     mat4x4 result = i4x4;
     result.m_data[0][0] = x;
@@ -244,7 +217,7 @@ mat4x4 scaling(float x, float y, float z)
     return result;
 }
 
-mat4x4 rotation(float x, float y, float z)
+mat4x4 rotation(double x, double y, double z)
 {
     mat4x4 rotx = i4x4;
     mat4x4 roty = i4x4;
@@ -271,7 +244,7 @@ mat4x4 rotation(float x, float y, float z)
     return result;
 }
 
-mat4x4 shearing(float Xy, float Xz, float Yx, float Yz, float Zx, float Zy)
+mat4x4 shearing(double Xy, double Xz, double Yx, double Yz, double Zx, double Zy)
 {
     mat4x4 result = i4x4;
     result.m_data[0][1] = Xy;
@@ -286,13 +259,22 @@ mat4x4 shearing(float Xy, float Xz, float Yx, float Yz, float Zx, float Zy)
     return result;
 }
 
-mat4x4 view_transform(tuple from, tuple to, tuple up)
+mat4x4 TRS(Point4 translate, Point4 rotate, Point4 scale)
+{
+    mat4x4 result{ translation(translate.x, translate.y, translate.z) };
+    result = result * rotation(rotate.x, rotate.y, rotate.z);
+    result = result * scaling(scale.x, scale.y, scale.z);
+
+    return result;
+}
+
+mat4x4 view_transform(Point4 from, Point4 to, Vector4 up)
 {
     mat4x4 result = i4x4;
 
-    tuple forward = normalize(to - from);
-    tuple left = cross(forward, normalize(up));
-    tuple true_up = cross(left, forward);
+    Vector4 forward = normalize(to - from);
+    Vector4 left = cross(forward, normalize(up));
+    Vector4 true_up = cross(left, forward);
 
     result.m_data[0][0] = left.x;
     result.m_data[0][1] = left.y;

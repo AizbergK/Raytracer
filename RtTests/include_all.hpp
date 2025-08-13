@@ -1,22 +1,31 @@
+#include <thread>
+#include <atomic>
+#include <chrono>
+#include <algorithm>
+
 #include "../Raytracer/Helpers.hpp"
 #include "../Raytracer/Tuples.hpp"
-#include "../Raytracer/ImgBuf.hpp"
 #include "../Raytracer/Matrix.hpp"
+#include "../Raytracer/ImgBuf.hpp"
 #include "../Raytracer/Ray.hpp"
-#include "../Raytracer/Sphere.hpp"
+#include "../Raytracer/Shapes.hpp"
 #include "../Raytracer/Intersection.hpp"
 #include "../Raytracer/PointLight.hpp"
 #include "../Raytracer/World.hpp"
 #include "../Raytracer/CompData.hpp"
 #include "../Raytracer/Camera.hpp"
+#include "../Raytracer/Material.hpp"
+#include "../Raytracer/Patterns.hpp"
 
 #include "../Raytracer/Helpers.cpp"
 #include "../Raytracer/Tuples.cpp"
-#include "../Raytracer/ImgBuf.cpp"
 #include "../Raytracer/Matrix.cpp"
+#include "../Raytracer/ImgBuf.cpp"
 #include "../Raytracer/Ray.cpp"
-#include "../Raytracer/Sphere.cpp"
+#include "../Raytracer/Shapes.cpp"
 #include "../Raytracer/Intersection.cpp"
 #include "../Raytracer/PointLight.cpp"
 #include "../Raytracer/World.cpp"
 #include "../Raytracer/Camera.cpp"
+#include "../Raytracer/Material.cpp"
+#include "../Raytracer/Patterns.cpp"

@@ -1,81 +1,132 @@
 #include "Ray.hpp"
 
-ray::ray(tuple pt, tuple dir) : m_origin{ pt }, m_direction{ dir } {}
+Ray::Ray(PVpair pv) : m_origin_dir{ pv } {}
 
-tuple ray::position(float time) 
+Point4 Ray::position(double time) 
 {
-	return m_origin + time * m_direction;
+	return m_origin_dir.origin + time * m_origin_dir.direction;
 }
 
-void ray::intersect(sphere& sph)
+void Ray::intersect(std::shared_ptr<Shape> shape)
 {
-	intersection i1, i2;
-
-	auto inv = sph.m_transform.inverse();
-	auto tr = this->transform(inv);
-
-	tuple sph_to_ray = tr.first - sph.m_position;
-
-	float a = dot(tr.second, tr.second);
-	float b = 2 * dot(tr.second, sph_to_ray);
-	float c = dot(sph_to_ray, sph_to_ray) - sph.m_radius * sph.m_radius;
-
-	float delta = b * b - 4 * a * c;
-	if (delta < 0) return;
-
-	i1.m_time = ( - b - std::sqrt(delta)) / (2 * a);
-	i1.m_obj = &sph;
-
-	i2.m_time = ( - b + std::sqrt(delta)) / (2 * a);
-	i2.m_obj = &sph;
-
-	m_intersections.emplace_back(i1);
-	m_intersections.emplace_back(i2);
-}
-
-void ray::intersect(world& the_world)
-{
-	for (auto& sp : the_world.m_spheres)
+	auto inv = shape->m_transform.inverse();
+	PVpair local_ray{ this->transform(inv) };
+	auto times = shape->intersect_ray(local_ray);
+	for (auto t : times)
 	{
-		this->intersect(sp);
+		Intersection i{ t, shape };
+		m_intersections.emplace_back(i);
 	}
 }
 
-std::pair<tuple, tuple> ray::transform(mat4x4& trmat)
+PVpair Ray::transform(mat4x4& trmat)
 {
-	return std::pair<tuple, tuple>(trmat * this->m_origin, trmat * this->m_direction);
+	return PVpair(trmat * this->m_origin_dir.origin, trmat * this->m_origin_dir.direction);
 }
 
-intersection ray::hit()
+Intersection Ray::hit()
 {
-	intersection the_hit;
+	Intersection the_hit;
 	the_hit.m_time = INFINITY;
 
 	for (auto& i : m_intersections)
-		if (i.m_time >= 0.0f && the_hit.m_time > i.m_time)
+		if (i.m_time >= 0.0 && the_hit.m_time > i.m_time)
 			the_hit = i;
 
 	return the_hit;
 }
 
-void ray::add_intersection(intersection& inter)
+void Ray::add_intersection(Intersection& inter)
 {
 	m_intersections.emplace_back(inter);
 }
 
-comp_data ray::get_comp_data()
+CompData Ray::get_comp_data(std::optional<int> opt)
 {
-	comp_data result;
+	CompData result;
 
-	result.inter = this->hit();
-	result.pt = this->position(result.inter.m_time);
-	result.eyev = -this->m_direction;
-	result.normalv = result.inter.m_obj->normal_at(result.pt);
-	if (dot(result.eyev, result.normalv) < 0.0f)
+	result.intersection = this->hit();
+	if (result.intersection.m_time > 1'000'000.0) 
+	{
+		return result;
+	}
+	result.pt = this->position(result.intersection.m_time);
+	result.eyev = -this->m_origin_dir.direction;
+
+
+	result.normalv = normal_at(result);
+	
+	if (dot(result.eyev, result.normalv) < 0.0)
 	{
 		result.is_inside = true;
 		result.normalv = -result.normalv;
 	}
+	result.over_pt = result.pt + result.normalv * EPSILON;
+	result.under_pt = result.pt - result.normalv * EPSILON;
+
+	result.reflectv = reflect(m_origin_dir.direction, result.normalv);
+
+	auto intersections = this->m_intersections;
+	std::sort(intersections.begin(), intersections.end(), [](Intersection& a, Intersection& b) {
+		return a.m_time < b.m_time;
+	});
+
+	std::vector<std::shared_ptr<Shape>> containers;
+
+	Intersection test_intersection = result.intersection;
+	if(opt.has_value())
+	{
+		test_intersection = intersections[opt.value()];
+	}
+
+	for (auto inter : intersections)
+	{
+		if (inter == test_intersection)
+		{
+			if (containers.size() == 0)
+			{
+				result.n1 = 1.0;
+			}
+			else
+			{
+				result.n1 = (*containers.rbegin())->m_material.m_refractive;
+			}
+		}
+		auto it = std::find(containers.begin(), containers.end(), inter.m_obj);
+
+		if (it == containers.end())
+		{
+			containers.emplace_back(inter.m_obj);
+		}
+		else
+		{
+			containers.erase(it);
+		}
+
+		if (inter == test_intersection)
+		{
+			if (containers.size() == 0)
+			{
+				result.n2 = 1.0;
+			}
+			else
+			{
+				result.n2 = (*containers.rbegin())->m_material.m_refractive;
+			}
+		}
+	}
+	
 
 	return result;
+}
+
+Vector4 Ray::normal_at(CompData cd)
+{
+	Vector4 result;
+
+	auto inv = cd.intersection.m_obj->m_transform.inverse();
+	result = cd.intersection.m_obj->normal_at_local(inv * cd.pt);
+	result = inv.transpose() * result;
+
+	return normalize(result);
 }

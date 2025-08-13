@@ -1,16 +1,18 @@
 #ifndef _INTERSECTION_
 #define _INTERSECTION_
 
-#include "Sphere.hpp"
+#include "Shapes.hpp"
 
-class intersection {
+class Intersection {
 public:
-	float m_time = NAN;
-	sphere* m_obj = nullptr;
+	double m_time = NAN;
+	std::shared_ptr<Shape> m_obj = nullptr;
 
-	intersection() = default;
-	intersection(float, sphere&);
-	~intersection() = default;
+	Intersection() = default;
+	Intersection(double, std::shared_ptr<Shape>);
+	~Intersection() = default;
+
+	bool operator==(Intersection& other);
 };
 
 #endif

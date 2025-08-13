@@ -1,53 +1,158 @@
 #ifndef _TUPLES_
 #define _TUPLES_
-
-#include <cstdlib>
-#include <cmath>
-
 #include "Helpers.hpp"
 
-class tuple {
+class Vector4;
+class Point4;
+class Color4;
+class TestTuple;
+
+template <typename Derived>
+class Tuple4 {
 public:
+	double x, y, z, w;
 
+	Tuple4() = default;
+	constexpr Tuple4(double X, double Y, double Z, double W) : x{ X }, y{ Y }, z{ Z }, w{ W } {}
+	~Tuple4() = default;
 
-	tuple() = default;
-	tuple(float X, float Y, float Z, float W);
-	~tuple() = default;
+	void operator=(const Derived& other)
+	{
+		x = other.x;
+		y = other.y;
+		z = other.z;
+		w = other.w;
+	}
 
-	void operator=(const tuple&);
-	bool operator==(const tuple&) const;
-	tuple operator+(const tuple&) const;
-	tuple operator+=(const tuple&);
-	tuple operator-(const tuple&) const;
-	tuple operator*(float) const;
-	tuple operator/(float) const;
-	tuple operator-();
-	tuple friend operator*(float, const tuple&);
+	bool operator==(const Derived& other) const
+	{
+		return is_equal(x, other.x) && is_equal(y, other.y) && is_equal(z, other.z) && is_equal(w, other.w);
+	}
 
-	float x = 0.0f;
-	float y = 0.0f;
-	float z = 0.0f;
-	float w = 0.0f;
+	Derived operator+(const Derived& other) const
+	{
+		Derived result;
 
-	tuple point_at(float);
-	tuple saturate(float lower, float upper) const;
+		result.x = x + other.x;
+		result.y = y + other.y;
+		result.z = z + other.z;
+		result.w = w + other.w;
+
+		return result;
+	}
+
+	Derived operator+=(Derived& other)
+	{
+		this->x += other.x;
+		this->y += other.y;
+		this->z += other.z;
+		this->w += other.w;
+
+		return *this;
+	}
+
+	Derived operator-(const Derived& other) const
+	{
+		Derived result;
+
+		result.x = x - other.x;
+		result.y = y - other.y;
+		result.z = z - other.z;
+		result.w = w - other.w;
+
+		return result;
+	}
+
+	Derived operator*(double factor) const
+	{
+		Derived result;
+
+		result.x = x * factor;
+		result.y = y * factor;
+		result.z = z * factor;
+		result.w = w * factor;
+
+		return result;
+	}
+
+	Derived friend operator*(double lhs, const Derived& rhs)
+	{
+		return rhs * lhs;
+	}
+
+	Derived operator/(double factor) const
+	{
+		Derived result;
+
+		result.x = x / factor;
+		result.y = y / factor;
+		result.z = z / factor;
+		result.w = w / factor;
+
+		return result;
+	}
+
+	Derived operator-()
+	{
+		Derived result;
+
+		result.x = -x;
+		result.y = -y;
+		result.z = -z;
+		result.w = -w;
+
+		return result;
+	}
 };
 
-float magnitude(const tuple&);
-tuple normalize(const tuple&);
+class Color4 : public Tuple4<Color4> {
+public:
+	using Tuple4<Color4>::operator==; //Needed for gtest <--
+	Color4();
+	constexpr Color4(double R, double G, double B) : Tuple4<Color4>(R, G, B, 0.0) {}
 
-float dot(const tuple&, const tuple&);
-tuple cross(const tuple&, const tuple&);
-tuple hadamard(const tuple&, const tuple&);
+	Color4 saturate(double lower, double upper);
+};
 
-tuple point(float, float, float);
-tuple vector(float, float, float);
-tuple color(float, float, float);
+class Point4 : public Tuple4<Point4> {
+public:
+	using Tuple4<Point4>::operator==;
+	Point4();
+	Point4 (double X, double Y, double Z);
+	Vector4 operator-(const Point4&) const;
+	Point4 operator+(const Vector4&) const;
+	Point4 operator-(const Vector4&) const;
 
-bool is_point(const tuple&);
-bool is_vector(const tuple&);
+};
 
-tuple reflect(const tuple&, const tuple&);
+class Vector4 : public Tuple4<Vector4> {
+public:
+	using Tuple4<Vector4>::operator==;
+	Vector4();
+	Vector4 (double X, double Y, double Z);
+	Point4 point_at(double t);
+};
 
+//unit test class
+class TestTuple : public Tuple4<TestTuple> {
+public:
+	using Tuple4<TestTuple>::operator==;
+	TestTuple();
+	TestTuple(double X, double Y, double Z, double W);
+};
+
+
+double magnitude(const Vector4&);
+Vector4 normalize(const Vector4&);
+
+double dot(const Vector4&, const Vector4&);
+Vector4 cross(const Vector4&, const Vector4&);
+Vector4 hadamard(const Vector4&, const Vector4&);
+Color4 hadamard(const Color4&, const Color4&);
+
+Vector4 reflect(const Vector4&, const Vector4&);
+
+constexpr Color4 BLACK{ 0.0, 0.0, 0.0 };
+constexpr Color4 WHITE{ 1.0, 1.0, 1.0 };
 
 #endif

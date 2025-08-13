@@ -103,6 +103,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,11 +114,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <ShowIncludes>false</ShowIncludes>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,9 +133,11 @@
     <ClInclude Include="Intersection.hpp" />
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="Matrix.hpp" />
+    <ClInclude Include="Patterns.hpp" />
     <ClInclude Include="PointLight.hpp" />
+    <ClInclude Include="PVpair.hpp" />
     <ClInclude Include="Ray.hpp" />
-    <ClInclude Include="Sphere.hpp" />
+    <ClInclude Include="Shapes.hpp" />
     <ClInclude Include="Tuples.hpp" />
     <ClInclude Include="World.hpp" />
   </ItemGroup>
@@ -145,10 +149,11 @@
     <ClCompile Include="Intersection.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="Patterns.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="Tuples.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>

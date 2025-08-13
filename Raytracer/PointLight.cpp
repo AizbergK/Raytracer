@@ -1,22 +1,25 @@
 #include "PointLight.hpp"
 
-pt_lght::pt_lght(tuple pt, tuple color) : m_pos{ pt }, m_intensity{ color } {}
+Light::Light(Point4 pt, Color4 col) : m_pos{ pt }, m_intensity{ col } {}
 
-tuple lighting(material& mat, pt_lght& pl, tuple& pos, tuple& eyev, tuple& normalv)
+Color4 lighting(Intersection& inter, Light& pl, Point4& pos, Vector4& eyev, Vector4& normalv, bool in_shadow)
 {
-	tuple effective_color = hadamard(mat.m_albedo, pl.m_intensity);
-	tuple lightv = normalize(pl.m_pos - pos);
-	tuple ambient = effective_color * mat.m_ambient;
-	float light_dot_normal = dot(lightv, normalv);
+	Material& mat = inter.m_obj->m_material;
+	Color4 point_color{ pattern_at_shape(inter.m_obj->m_transform, mat, pos)};
+	Color4 effective_color = hadamard(point_color, pl.m_intensity);
+	Vector4 lightv = normalize(pl.m_pos - pos);
+	Color4 ambient = effective_color * mat.m_ambient;
+	double light_dot_normal = dot(lightv, normalv);
 
-	tuple diffuse;
-	tuple specular;
-	tuple reflectv;
-	float reflect_dot_eye = 0.0f;
-	if (light_dot_normal < 0.0f)
+	Color4 diffuse;
+	Color4 specular;
+	Vector4 reflectv;
+	double reflect_dot_eye = 0.0;
+
+	if (light_dot_normal < 0.0 || in_shadow)
 	{
-		diffuse = color(0, 0, 0);
-		specular = color(0, 0, 0);
+		diffuse = Color4(0, 0, 0);
+		specular = Color4(0, 0, 0);
 	}
 	else
 	{
@@ -25,13 +28,13 @@ tuple lighting(material& mat, pt_lght& pl, tuple& pos, tuple& eyev, tuple& norma
 		reflect_dot_eye = dot(reflectv, eyev);
 	}
 
-	if (reflect_dot_eye <= 0.0f)
+	if (reflect_dot_eye <= 0.0)
 	{
-		specular = color(0, 0, 0);
+		specular = Color4(0, 0, 0);
 	}
 	else
 	{
-		float factor = std::pow(reflect_dot_eye, mat.m_shininess);
+		double factor = std::pow(reflect_dot_eye, mat.m_shininess);
 		specular = pl.m_intensity * mat.m_specular * factor;
 	}
 

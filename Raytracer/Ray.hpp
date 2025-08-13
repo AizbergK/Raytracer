@@ -1,35 +1,37 @@
 #ifndef _RAY_
 #define _RAY_
 
+#include <algorithm>
 #include <utility>
 #include <vector>
+#include <optional>
 
 #include "Tuples.hpp"
-#include "Sphere.hpp"
+#include "Shapes.hpp"
 #include "Intersection.hpp"
 #include "Matrix.hpp"
-#include "World.hpp"
 #include "CompData.hpp"
+#include "PVpair.hpp"
 
-class world;
 
-class ray {
+
+class Ray {
 public:
-	tuple m_origin;
-	tuple m_direction;
-	std::vector<intersection> m_intersections;
+	PVpair m_origin_dir;
+	std::vector<Intersection> m_intersections;
 
-	ray() = default;
-	ray(tuple, tuple);
-	~ray() = default;
+	Ray() = default;
+	Ray(PVpair);
+	~Ray() = default;
 
-	tuple position(float);
-	void intersect(sphere&);
-	void intersect(world&);
-	std::pair<tuple, tuple> transform(mat4x4&);
-	intersection hit();
-	void add_intersection(intersection&);
-	comp_data get_comp_data();
+	Point4 position(double);
+	void intersect(std::shared_ptr<Shape>);
+	
+	PVpair transform(mat4x4&);
+	Intersection hit();
+	void add_intersection(Intersection&);
+	CompData get_comp_data(std::optional<int> opt = std::nullopt);
+	Vector4 normal_at(CompData);
 };
 
 #endif
