@@ -25,9 +25,9 @@ public:
 	~Ray() = default;
 
 	Point4 position(double);
-	void intersect(std::shared_ptr<Shape>);
+	void intersect(Shape*);
 	
-	PVpair transform(mat4x4&);
+	PVpair get_pv();
 	Intersection hit();
 	void add_intersection(Intersection&);
 	CompData get_comp_data(std::optional<int> opt = std::nullopt);

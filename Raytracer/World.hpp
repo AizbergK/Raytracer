@@ -2,7 +2,7 @@
 #define _WORLD_
 
 #include <vector>
-#include <memory>
+#include <concepts>
 
 #include "Shapes.hpp"
 #include "PointLight.hpp"
@@ -11,13 +11,33 @@
 
 class World {
 public:
-	std::vector<std::shared_ptr<Shape>> m_shapes;
+	std::vector<Shape*> m_shapes;
 	std::vector<Light> m_point_lights;
 
+	void delete_objects();
 	void add_light(Light&);
-	void add_object(Shape&);
+
+	template<std::derived_from<Shape> T>
+	inline void add_object(T& shape);
+	template<std::derived_from<Shape> T>
+	inline void add_object(T* shape);
+
 	Color4 shade_hit(CompData&, int remaining_hits);
 };
+
+template<std::derived_from<Shape> T>
+inline void World::add_object(T& shape)
+{
+	T* node = new T(shape);
+	m_shapes.emplace_back(node);
+	Group::track_nodes.emplace_back(node);
+}
+template<std::derived_from<Shape> T>
+inline void World::add_object(T* shape)
+{
+	m_shapes.emplace_back(shape);
+	Group::track_nodes.emplace_back(shape);
+}
 
 Color4 color_at(World&, Ray&, int remaining_hits);
 Color4 reflected_color(World&, CompData&, int remaining_hits);

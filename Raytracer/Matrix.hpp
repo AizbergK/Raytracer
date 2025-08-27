@@ -120,7 +120,7 @@ public:
 mat4x4 translation(double, double, double);
 mat4x4 scaling(double, double, double);
 mat4x4 rotation(double, double, double);
-mat4x4 TRS(Point4 translate, Point4 rotate, Point4 scale);
+mat4x4 TRS(Point4 translate, Point4 rotate = Point4(0.0, 0.0, 0.0), Point4 scale = Point4(1.0, 1.0, 1.0));
 mat4x4 shearing(double, double, double, double, double, double);
 
 mat4x4 view_transform(Point4 from, Point4 to, Vector4 up);

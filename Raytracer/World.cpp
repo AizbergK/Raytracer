@@ -1,15 +1,13 @@
 #include "World.hpp"
 
+void World::delete_objects()
+{
+	Group::delete_track_nodes();
+}
 
 void World::add_light(Light& lgth)
 {
 	m_point_lights.emplace_back(lgth);
-}
-
-
-void World::add_object(Shape& shape)
-{
-	m_shapes.emplace_back(shape.get_ptr());
 }
 
 //Recursive ray loop
@@ -34,8 +32,6 @@ Color4 World::shade_hit(CompData& comps, int remaining_hits)
 	Color4 refract_color{ refracted_color(*this, comps, remaining_hits) };
 
 	Material& mat = comps.intersection.m_obj->m_material;
-
-	surface_color = surface_color / static_cast<double>(this->m_point_lights.size());
 
 	if (mat.m_reflective > 0.0 && mat.m_transparency > 0.0)
 	{
@@ -159,7 +155,7 @@ bool is_shadowed(World& w, Point4& p, Light& l)
 
 void intersect(World& the_world, Ray& ray)
 {
-	for (auto& sp : the_world.m_shapes)
+	for (auto sp : the_world.m_shapes)
 	{
 		ray.intersect(sp);
 	}

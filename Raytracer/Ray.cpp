@@ -7,21 +7,19 @@ Point4 Ray::position(double time)
 	return m_origin_dir.origin + time * m_origin_dir.direction;
 }
 
-void Ray::intersect(std::shared_ptr<Shape> shape)
+void Ray::intersect(Shape* shape)
 {
-	auto inv = shape->m_transform.inverse();
-	PVpair local_ray{ this->transform(inv) };
-	auto times = shape->intersect_ray(local_ray);
-	for (auto t : times)
+	auto times = shape->intersect_ray(this->get_pv());
+	for (auto& p : times)
 	{
-		Intersection i{ t, shape };
+		Intersection i{ p };
 		m_intersections.emplace_back(i);
 	}
 }
 
-PVpair Ray::transform(mat4x4& trmat)
+PVpair Ray::get_pv()
 {
-	return PVpair(trmat * this->m_origin_dir.origin, trmat * this->m_origin_dir.direction);
+	return PVpair(this->m_origin_dir.origin, this->m_origin_dir.direction);
 }
 
 Intersection Ray::hit()
@@ -71,7 +69,7 @@ CompData Ray::get_comp_data(std::optional<int> opt)
 		return a.m_time < b.m_time;
 	});
 
-	std::vector<std::shared_ptr<Shape>> containers;
+	std::vector<Shape*> containers;
 
 	Intersection test_intersection = result.intersection;
 	if(opt.has_value())
@@ -122,11 +120,18 @@ CompData Ray::get_comp_data(std::optional<int> opt)
 
 Vector4 Ray::normal_at(CompData cd)
 {
-	Vector4 result;
+	mat4x4 transf{ cd.intersection.m_obj->m_transform };
+	for (Group* p = cd.intersection.m_obj->m_parent; p; p = p->m_parent)
+	{
+		transf = p->m_transform * transf;
+	}
 
-	auto inv = cd.intersection.m_obj->m_transform.inverse();
-	result = cd.intersection.m_obj->normal_at_local(inv * cd.pt);
-	result = inv.transpose() * result;
+	auto world_center = transf * Point4(0, 0, 0);
 
-	return normalize(result);
+	mat4x4 world_to_local = transf.inverse();
+
+	Vector4 local_normal = cd.intersection.m_obj->normal_at_local(world_to_local * cd.pt);
+	Vector4 world_normal = world_to_local.transpose() * local_normal;
+
+	return normalize(world_normal);
 }

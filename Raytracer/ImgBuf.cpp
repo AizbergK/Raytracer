@@ -26,7 +26,7 @@ struct BMPInfoHeader {
 
 #pragma pack(pop)
 
-void ImgBuf::writeBMP(const std::string& folder_path) const {
+void ImgBuf::writeBMP(const std::string& folder_path, bool is_tonemapped) const {
     int bmp_count = 0;
     std::ifstream fcount(folder_path + "\\count.bin");
     if (fcount)
@@ -53,9 +53,21 @@ void ImgBuf::writeBMP(const std::string& folder_path) const {
     for (int y = m_height - 1; y >= 0; --y) {
         for (int x = 0; x < m_width; ++x) {
             int i = (m_height - 1 - y) * rowSize + x * 3;
-            pixelData[i + 0] = static_cast<int>(m_img_data[y][x].z * 255);  // Blue
-            pixelData[i + 1] = static_cast<int>(m_img_data[y][x].y * 255);  // Green
-            pixelData[i + 2] = static_cast<int>(m_img_data[y][x].x * 255);  // Red
+
+            if (is_tonemapped)
+            {
+                Color4 tone_mapped = reinhard_extended_luminance(m_img_data[y][x], this->max_luminance);
+                tone_mapped = tone_mapped.saturate(0.0, 1.0);
+                pixelData[i + 0] = static_cast<int>(tone_mapped.z * 255);  // Blue
+                pixelData[i + 1] = static_cast<int>(tone_mapped.y * 255);  // Green
+                pixelData[i + 2] = static_cast<int>(tone_mapped.x * 255);  // Red
+            }
+            else
+            {
+                pixelData[i + 0] = static_cast<int>(m_img_data[y][x].z * 255);  // Blue
+                pixelData[i + 1] = static_cast<int>(m_img_data[y][x].y * 255);  // Green
+                pixelData[i + 2] = static_cast<int>(m_img_data[y][x].x * 255);  // Red
+            }
         }
     }
 
@@ -114,16 +126,23 @@ ImgBuf render(Camera& c, World& w, int max_bounces)
     hide_console_cursor();
     std::for_each(std::execution::par, indices.begin(), indices.end(), [&](int j)
     {
+        double line_luminance = 0.0;
         for (int i = 0; i < canvas.m_width; i++)
         {
             Ray r{ c.ray_for_pixel(i, j) };
-            canvas.write_pixel(i, j, color_at(w, r, max_bounces).saturate(0.0, 1.0));
+            Color4 px_col = color_at(w, r, max_bounces);
+            canvas.write_pixel(i, j, px_col);
+            line_luminance = get_luminance(px_col);
         }
         int done = ++rows_done;
         float percent = (100.0f * done) / canvas.m_height;
         {
             std::lock_guard<std::mutex> lock(cout_mutex);
             std::cout << "\rRendering: " << std::fixed << std::setprecision(1) << percent << "% completed" << std::flush;
+            if (line_luminance > canvas.max_luminance)
+            {
+                canvas.max_luminance = line_luminance;
+            }
         }
     });
     show_console_cursor();
@@ -147,4 +166,23 @@ ImgBuf test_render(Camera& c, World& w, int max_bounces)
         }
 
     return canvas;
+}
+
+Color4 reinhard_extended_luminance(Color4 v, double max_white_l)
+{
+    double l_old = get_luminance(v);
+    double numerator = l_old * (1.0f + (l_old / (max_white_l * max_white_l)));
+    double l_new = numerator / (1.0f + l_old);
+    return change_luminance(v, l_new);
+}
+
+Color4 change_luminance(Color4 c_in, double l_out)
+{
+    double l_in = get_luminance(c_in);
+    return c_in * (l_out / l_in);
+}
+
+double get_luminance(Color4& col)
+{
+    return dot(Vector4(col.x, col.y, col.z), Vector4(0.2126, 0.7152, 0.0722));
 }

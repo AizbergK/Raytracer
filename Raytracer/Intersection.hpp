@@ -6,10 +6,11 @@
 class Intersection {
 public:
 	double m_time = NAN;
-	std::shared_ptr<Shape> m_obj = nullptr;
+	Shape* m_obj = nullptr;
 
 	Intersection() = default;
-	Intersection(double, std::shared_ptr<Shape>);
+	Intersection(double, Shape*);
+	Intersection(std::pair<double, Shape*>);
 	~Intersection() = default;
 
 	bool operator==(Intersection& other);

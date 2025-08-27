@@ -154,5 +154,8 @@ Vector4 reflect(const Vector4&, const Vector4&);
 
 constexpr Color4 BLACK{ 0.0, 0.0, 0.0 };
 constexpr Color4 WHITE{ 1.0, 1.0, 1.0 };
+constexpr Color4 RED{ 1.0, 0.0, 0.0 };
+constexpr Color4 GREEN{ 0.0, 1.0, 0.0 };
+constexpr Color4 BLUE{ 0.0, 0.0, 1.0 };
 
 #endif

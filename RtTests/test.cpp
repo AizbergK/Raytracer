@@ -128,7 +128,7 @@ namespace TuplePointVector
 
 namespace CanvasDrawing
 {
-	TEST(TupleTest, HandlesColorAsignment)
+	TEST(TupleTest, HandlesColorassignment)
 	{
 		Color4 c{ -0.5, 0.4, 1.7 };
 
@@ -169,13 +169,13 @@ namespace CanvasDrawing
 
 		img_buf_test.write_pixel(2, 5, Color4(1, 0, 0));
 
-		EXPECT_TRUE(img_buf_test.pixel_at(2, 5) == Color4(1.0, 0.0, 0.0)) << "Canvas pixel asignment bad";
+		EXPECT_TRUE(img_buf_test.pixel_at(2, 5) == Color4(1.0, 0.0, 0.0)) << "Canvas pixel assignment bad";
 	}
 }
 
 namespace Matrices
 {
-	TEST(MatrixTest, HandlesMatrixAsignment)
+	TEST(MatrixTest, HandlesMatrixassignment)
 	{
 		mat4x4 a1{
 			1.0 , 2.0 , 3.0 , 4.0,
@@ -194,22 +194,22 @@ namespace Matrices
 			 1.0, -2.0
 		};
 
-		EXPECT_TRUE(is_equal(1.0, a1.m_data[0][0])) << "Bad 4x4 asignment at 0,0";
-		EXPECT_TRUE(is_equal(4.0, a1.m_data[0][3])) << "Bad 4x4 asignment at 0,3";
-		EXPECT_TRUE(is_equal(5.5, a1.m_data[1][0])) << "Bad 4x4 asignment at 1,0";
-		EXPECT_TRUE(is_equal(7.5, a1.m_data[1][2])) << "Bad 4x4 asignment at 1,2";
-		EXPECT_TRUE(is_equal(11.0, a1.m_data[2][2])) << "Bad 4x4 asignment at 2,2";
-		EXPECT_TRUE(is_equal(13.5, a1.m_data[3][0])) << "Bad 4x4 asignment at 3,0";
-		EXPECT_TRUE(is_equal(15.5, a1.m_data[3][2])) << "Bad 4x4 asignment at 3,2";
+		EXPECT_TRUE(is_equal(1.0, a1.m_data[0][0])) << "Bad 4x4 assignment at 0,0";
+		EXPECT_TRUE(is_equal(4.0, a1.m_data[0][3])) << "Bad 4x4 assignment at 0,3";
+		EXPECT_TRUE(is_equal(5.5, a1.m_data[1][0])) << "Bad 4x4 assignment at 1,0";
+		EXPECT_TRUE(is_equal(7.5, a1.m_data[1][2])) << "Bad 4x4 assignment at 1,2";
+		EXPECT_TRUE(is_equal(11.0, a1.m_data[2][2])) << "Bad 4x4 assignment at 2,2";
+		EXPECT_TRUE(is_equal(13.5, a1.m_data[3][0])) << "Bad 4x4 assignment at 3,0";
+		EXPECT_TRUE(is_equal(15.5, a1.m_data[3][2])) << "Bad 4x4 assignment at 3,2";
 
-		EXPECT_TRUE(is_equal(-3.0, a2.m_data[0][0])) << "Bad 3x3 asignment at 0,0";
-		EXPECT_TRUE(is_equal(-2.0, a2.m_data[1][1])) << "Bad 3x3 asignment at 1,1";
-		EXPECT_TRUE(is_equal(1.0, a2.m_data[2][2])) << "Bad 3x3 asignment at 2,2";
+		EXPECT_TRUE(is_equal(-3.0, a2.m_data[0][0])) << "Bad 3x3 assignment at 0,0";
+		EXPECT_TRUE(is_equal(-2.0, a2.m_data[1][1])) << "Bad 3x3 assignment at 1,1";
+		EXPECT_TRUE(is_equal(1.0, a2.m_data[2][2])) << "Bad 3x3 assignment at 2,2";
 
-		EXPECT_TRUE(is_equal(-3.0, a3.m_data[0][0])) << "Bad 2x2 asignment at 0,0";
-		EXPECT_TRUE(is_equal(5.0, a3.m_data[0][1])) << "Bad 2x2 asignment at 0,1";
-		EXPECT_TRUE(is_equal(1.0, a3.m_data[1][0])) << "Bad 2x2 asignment at 1,0";
-		EXPECT_TRUE(is_equal(-2.0, a3.m_data[1][1])) << "Bad 2x2 asignment at 1,1";
+		EXPECT_TRUE(is_equal(-3.0, a3.m_data[0][0])) << "Bad 2x2 assignment at 0,0";
+		EXPECT_TRUE(is_equal(5.0, a3.m_data[0][1])) << "Bad 2x2 assignment at 0,1";
+		EXPECT_TRUE(is_equal(1.0, a3.m_data[1][0])) << "Bad 2x2 assignment at 1,0";
+		EXPECT_TRUE(is_equal(-2.0, a3.m_data[1][1])) << "Bad 2x2 assignment at 1,1";
 	}
 
 	TEST(MatrixTest, HandlesMatrixComparison)
@@ -577,7 +577,7 @@ namespace RaySphereIntersect
 	{
 		Ray a1{ PVpair(Point4(0.0, 0.0, -5.0), Vector4(0.0, 0.0, 1.0)) };
 		Sphere a2;
-		a1.intersect(a2.get_ptr());
+		a1.intersect(&a2);
 
 		EXPECT_TRUE(a1.m_intersections.size() == 2) << "Ray Sphere Intersection bad";
 		EXPECT_TRUE(is_equal(a1.m_intersections[0].m_time, 4.0)) << "Ray Sphere Intersection bad";
@@ -585,7 +585,7 @@ namespace RaySphereIntersect
 
 		Ray a3{ PVpair(Point4(0.0, 1.0, -5.0), Vector4(0.0, 0.0, 1.0)) };
 		Sphere a4;
-		a3.intersect(a4.get_ptr());
+		a3.intersect(&a4);
 
 		EXPECT_TRUE(a3.m_intersections.size() == 2) << "Ray Sphere Intersection bad";
 		EXPECT_TRUE(is_equal(a3.m_intersections[0].m_time, 5.0)) << "Ray Sphere Intersection bad";
@@ -593,20 +593,20 @@ namespace RaySphereIntersect
 
 		Ray a5{ PVpair(Point4(0.0, 2.0, -5.0), Vector4(0.0, 0.0, 1.0)) };
 		Sphere a6;
-		a5.intersect(a6.get_ptr());
+		a5.intersect(&a6);
 
 		EXPECT_TRUE(a5.m_intersections.size() == 0) << "Ray Sphere Intersection bad";
 
 		Ray a7{ PVpair(Point4(0.0, 0.0, 0.0), Vector4(0.0, 0.0, 1.0)) };
 		Sphere a8;
-		a7.intersect(a8.get_ptr());
+		a7.intersect(&a8);
 
 		EXPECT_TRUE(is_equal(a7.m_intersections[0].m_time, -1.0)) << "Ray Sphere Intersection bad";
 		EXPECT_TRUE(is_equal(a7.m_intersections[1].m_time, 1.0)) << "Ray Sphere Intersection bad";
 
 		Ray a9{ PVpair(Point4(0.0, 0.0, 5.0), Vector4(0.0, 0.0, 1.0)) };
 		Sphere a10;
-		a9.intersect(a10.get_ptr());
+		a9.intersect(&a10);
 
 		EXPECT_TRUE(is_equal(a9.m_intersections[0].m_time, -6.0)) << "Ray Sphere Intersection bad";
 		EXPECT_TRUE(is_equal(a9.m_intersections[1].m_time, -4.0)) << "Ray Sphere Intersection bad";
@@ -615,7 +615,7 @@ namespace RaySphereIntersect
 	TEST(RayTest, HandlesRayIntersection)
 	{
 		Sphere a1;
-		Intersection a2{ 0.0, a1.get_ptr() };
+		Intersection a2{ 0.0, &a1 };
 
 		EXPECT_TRUE(is_equal(a2.m_time, 0.0)) << "Ray Sphere Intersection bad";
 	}
@@ -624,18 +624,18 @@ namespace RaySphereIntersect
 	{
 		Sphere a1;
 		Ray a2;
-		Intersection a3{ -2.0, a1.get_ptr() };
-		Intersection a4{ -1.0, a1.get_ptr() };
+		Intersection a3{ -2.0, &a1 };
+		Intersection a4{ -1.0, &a1 };
 		a2.add_intersection(a4);
 		a2.add_intersection(a3);
 		Intersection a5 = a2.hit();
 
 		EXPECT_TRUE(a5.m_time == INFINITY) << "Ray hits bad";
 
-		Intersection a6{  5.0, a1.get_ptr() };
-		Intersection a7{  7.0, a1.get_ptr() };
-		Intersection a8{ -3.0, a1.get_ptr() };
-		Intersection a9{  2.0, a1.get_ptr() };
+		Intersection a6{  5.0, &a1 };
+		Intersection a7{  7.0, &a1 };
+		Intersection a8{ -3.0, &a1 };
+		Intersection a9{  2.0, &a1 };
 		Ray a10;
 		a10.add_intersection(a6);
 		a10.add_intersection(a7);
@@ -649,26 +649,12 @@ namespace RaySphereIntersect
 
 	TEST(RayTest, HandlesRayScale)
 	{
-		Ray a1{ PVpair(Point4(1.0, 2.0, 3.0), Vector4(0.0, 1.0, 0.0)) };
-		mat4x4 a2{ translation(3.0, 4.0, 5.0) };
-		auto a3 = a1.transform(a2);
+		Ray a1{ PVpair(Point4(0.0, 0.0, -5.0), Vector4(0.0, 0.0, 1.0)) };
+		Sphere a2{ scaling(2.0, 2.0, 2.0) };
+		a1.intersect(&a2);
 
-		EXPECT_TRUE(a3.origin == Point4(4.0, 6.0, 8.0)) << "Ray hits bad";
-		EXPECT_TRUE(a3.direction == Vector4(0.0, 1.0, 0.0)) << "Ray hits bad";
-
-		Ray a4{ PVpair(Point4(1.0, 2.0, 3.0), Vector4(0.0, 1.0, 0.0)) };
-		mat4x4 a5{ scaling(2.0, 3.0, 4.0) };
-		auto a6 = a4.transform(a5);
-
-		EXPECT_TRUE(a6.origin == Point4(2.0, 6.0, 12.0)) << "Ray hits bad";
-		EXPECT_TRUE(a6.direction == Vector4(0.0, 3.0, 0.0)) << "Ray hits bad";
-
-		Ray a7{ PVpair(Point4(0.0, 0.0, -5.0), Vector4(0.0, 0.0, 1.0)) };
-		Sphere a8{ scaling(2.0, 2.0, 2.0) };
-		a7.intersect(a8.get_ptr());
-
-		EXPECT_TRUE(is_equal(a7.m_intersections[0].m_time, 3.0)) << "Ray hits bad";
-		EXPECT_TRUE(is_equal(a7.m_intersections[1].m_time, 7.0)) << "Ray hits bad";
+		EXPECT_TRUE(is_equal(a1.m_intersections[0].m_time, 3.0)) << "Ray hits bad";
+		EXPECT_TRUE(is_equal(a1.m_intersections[1].m_time, 7.0)) << "Ray hits bad";
 	}
 }
 
@@ -747,7 +733,7 @@ namespace LightAndShading
 	{
 		Material m1;
 		Sphere s{ m1 };
-		Intersection i{ 0.0, s.get_ptr() };
+		Intersection i{ 0.0, &s };
 		Point4 a0{ Point4(0.0, 0.0, 0.0) };
 		Vector4 a1{ Vector4(0.0, 0.0, -1.0) };
 		Vector4 a2{ Vector4(0.0, 0.0, -1.0) };
@@ -813,7 +799,7 @@ namespace Scene
 	{
 		Ray r1{ PVpair(Point4(0.0, 0.0, -5.0), Vector4(0.0, 0.0, 1.0)) };
 		Sphere s1;
-		Intersection i1{ 1.0, s1.get_ptr() };
+		Intersection i1{ 1.0, &s1 };
 		r1.add_intersection(i1);
 		CompData c1 = r1.get_comp_data();
 
@@ -821,7 +807,7 @@ namespace Scene
 
 		Ray r2{ PVpair(Point4(0.0, 0.0, 0.0), Vector4(0.0, 0.0, 1.0)) };
 		Sphere s2;
-		Intersection i2{ 1.0, s2.get_ptr() };
+		Intersection i2{ 1.0, &s2 };
 		r2.add_intersection(i2);
 		CompData c2 = r2.get_comp_data();
 
@@ -956,7 +942,7 @@ namespace Shadows
 	{
 		Material mat;
 		Sphere s{ mat };
-		Intersection i{ 0.0, s.get_ptr() };
+		Intersection i{ 0.0, &s };
 
 		Point4 pos{ Point4(0.0, 0.0, 0.0) };
 		Vector4 eyev{ Vector4(0.0, 0.0, -1.0) };
@@ -998,23 +984,23 @@ namespace Planes
 	{
 		Plane pl1;
 		Ray r1{ PVpair(Point4(0.0, 10.0, 0.0), Vector4(0.0, 0.0, 1.0)) };
-		r1.intersect(pl1.get_ptr());
+		r1.intersect(&pl1);
 		EXPECT_TRUE(r1.m_intersections.size() == 0) << "Plane intersection bad";
 
 		Plane pl2;
 		Ray r2{ PVpair(Point4(0.0, 0.0, 0.0), Vector4(0.0, 0.0, 1.0)) };
-		r2.intersect(pl2.get_ptr());
+		r2.intersect(&pl2);
 		EXPECT_TRUE(r2.m_intersections.size() == 0) << "Plane intersection bad";
 
 		Plane pl3;
 		Ray r3{ PVpair(Point4(0.0, 1.0, 0.0), Vector4(0.0, -1.0, 0.0)) };
-		r3.intersect(pl3.get_ptr());
+		r3.intersect(&pl3);
 		EXPECT_TRUE(r3.m_intersections.size() == 1) << "Plane intersection bad";
 		EXPECT_TRUE(r3.m_intersections[0].m_time == 1.0) << "Plane intersection bad";
 
 		Plane pl4;
 		Ray r4{ PVpair(Point4(0.0, -1.0, 0.0), Vector4(0.0, 1.0, 1.0)) };
-		r4.intersect(pl4.get_ptr());
+		r4.intersect(&pl4);
 		EXPECT_TRUE(r4.m_intersections.size() == 1) << "Plane intersection bad";
 		EXPECT_TRUE(r4.m_intersections[0].m_time == 1.0) << "Plane intersection bad";
 	}
@@ -1066,7 +1052,7 @@ namespace Patterns
 		mat.m_specular = 0.0;
 
 		Sphere s{ mat };
-		Intersection i{ 0.0, s.get_ptr() };
+		Intersection i{ 0.0, &s };
 
 		Vector4 eyev{ 0.0, 0.0, -1.0 };
 		Vector4 normalv{ 0.0, 0.0, -1.0 };
@@ -1170,7 +1156,7 @@ namespace Reflections
 	{
 		Plane p;
 		Ray r{ PVpair(Point4(0.0, 1.0, -1.0), Vector4(0.0, -std::sqrt(2.0) / 2.0, std::sqrt(2.0) / 2.0)) };
-		Intersection i{ std::sqrt(2.0), p.get_ptr() };
+		Intersection i{ std::sqrt(2.0), &p };
 		r.add_intersection(i);
 		CompData cd{ r.get_comp_data() };
 		EXPECT_TRUE(cd.reflectv == Vector4(0.0, sqrt(2.0) / 2.0, sqrt(2.0) / 2.0)) << "Reflective bad";
@@ -1273,7 +1259,7 @@ namespace Refraction
 		Ray r{ PVpair{ Point4{ 0.0, 0.0, -5.0 }, Vector4{ 0.0, 0.0, 1.0 } } };
 		Sphere sph{ glass_sphere() };
 		sph.m_transform = translation(0.0, 0.0, 1.0);
-		Intersection i{ 5.0, sph.get_ptr() };
+		Intersection i{ 5.0, &sph };
 		r.add_intersection(i);
 		CompData cd = r.get_comp_data(0);
 		EXPECT_GT(cd.under_pt.z, EPSILON / 2.0) << "Refraction bad";
@@ -1382,10 +1368,9 @@ namespace Refraction
 	TEST(RefractionTest, HandlesSchlick)
 	{
 		Sphere sph{ glass_sphere() };
-		std::shared_ptr<Shape> s = sph.get_ptr();
 		Ray r{ PVpair{Point4(0.0, 0.0, std::sqrt(2.0) / 2.0), Vector4(0.0, 1.0, 0.0)} };
-		Intersection i1{ -std::sqrt(2.0) / 2.0, s };
-		Intersection i2{ std::sqrt(2.0) / 2.0, s };
+		Intersection i1{ -std::sqrt(2.0) / 2.0, &sph };
+		Intersection i2{ std::sqrt(2.0) / 2.0, &sph };
 
 		r.add_intersection(i1);
 		r.add_intersection(i2);
@@ -1400,10 +1385,9 @@ namespace Refraction
 	TEST(RefractionTest, HandlesSchlickPerependicular)
 	{
 		Sphere sph{ glass_sphere() };
-		std::shared_ptr<Shape> s = sph.get_ptr();
 		Ray r{ PVpair{Point4(0.0, 0.0, 0.0), Vector4(0.0, 1.0, 0.0)} };
-		Intersection i1{ -1.0, s };
-		Intersection i2{ 1.0, s };
+		Intersection i1{ -1.0, &sph };
+		Intersection i2{ 1.0, &sph };
 
 		r.add_intersection(i1);
 		r.add_intersection(i2);
@@ -1418,9 +1402,8 @@ namespace Refraction
 	TEST(RefractionTest, HandlesSchlickSlightAngle)
 	{
 		Sphere sph{ glass_sphere() };
-		std::shared_ptr<Shape> s = sph.get_ptr();
 		Ray r{ PVpair{Point4(0.0, 0.99, -2.0), Vector4(0.0, 0.0, 1.0)} };
-		Intersection i1{ 1.8589, s };
+		Intersection i1{ 1.8589, &sph };
 
 		r.add_intersection(i1);
 
@@ -1456,5 +1439,536 @@ namespace Refraction
 		Color4 col = w.shade_hit(cd, 5);
 
 		EXPECT_TRUE(col == Color4(0.93391, 0.69643, 0.69243));
+	}
+}
+
+namespace Cubes
+{
+	TEST(CubeTest, HandlesIntersection)
+	{
+		Cube c1;
+		Ray r1{ PVpair{ Point4(5.0, 0.5, 0.0) , Vector4(-1.0, 0.0, 0.0) } };
+		r1.intersect(&c1);
+		EXPECT_TRUE(is_equal(r1.m_intersections[0].m_time, 4.0)) << "Cube intersection bad";
+		EXPECT_TRUE(is_equal(r1.m_intersections[1].m_time, 6.0)) << "Cube intersection bad";
+
+		Cube c2;
+		Ray r2{ PVpair{ Point4(-5.0, 0.5, 0.0) , Vector4(1.0, 0.0, 0.0) } };
+		r2.intersect(&c2);
+		EXPECT_TRUE(is_equal(r2.m_intersections[0].m_time, 4.0)) << "Cube intersection bad";
+		EXPECT_TRUE(is_equal(r2.m_intersections[1].m_time, 6.0)) << "Cube intersection bad";
+
+		Cube c3;
+		Ray r3{ PVpair{ Point4(0.5, 5.0, 0.0) , Vector4(0.0, -1.0, 0.0) } };
+		r3.intersect(&c3);
+		EXPECT_TRUE(is_equal(r3.m_intersections[0].m_time, 4.0)) << "Cube intersection bad";
+		EXPECT_TRUE(is_equal(r3.m_intersections[1].m_time, 6.0)) << "Cube intersection bad";
+
+		Cube c4;
+		Ray r4{ PVpair{ Point4(0.5, -5.0, 0.0) , Vector4(0.0, 1.0, 0.0) } };
+		r4.intersect(&c4);
+		EXPECT_TRUE(is_equal(r4.m_intersections[0].m_time, 4.0)) << "Cube intersection bad";
+		EXPECT_TRUE(is_equal(r4.m_intersections[1].m_time, 6.0)) << "Cube intersection bad";
+
+		Cube c5;
+		Ray r5{ PVpair{ Point4(0.5, 0.0, 5.0) , Vector4(0.0, 0.0, -1.0) } };
+		r5.intersect(&c5);
+		EXPECT_TRUE(is_equal(r5.m_intersections[0].m_time, 4.0)) << "Cube intersection bad";
+		EXPECT_TRUE(is_equal(r5.m_intersections[1].m_time, 6.0)) << "Cube intersection bad";
+
+		Cube c6;
+		Ray r6{ PVpair{ Point4(0.5, 0.0, -5.0) , Vector4(0.0, 0.0, 1.0) } };
+		r6.intersect(&c6);
+		EXPECT_TRUE(is_equal(r6.m_intersections[0].m_time, 4.0)) << "Cube intersection bad";
+		EXPECT_TRUE(is_equal(r6.m_intersections[1].m_time, 6.0)) << "Cube intersection bad";
+
+		Cube c7;
+		Ray r7{ PVpair{ Point4(0.0, 0.5, 0.0) , Vector4(0.0, 0.0, 1.0) } };
+		r7.intersect(&c7);
+		EXPECT_TRUE(is_equal(r7.m_intersections[0].m_time, -1.0)) << "Cube intersection bad";
+		EXPECT_TRUE(is_equal(r7.m_intersections[1].m_time, 1.0)) << "Cube intersection bad";
+	}
+
+	TEST(CubeTest, HandlesNoIntersection)
+	{
+		Cube c1;
+		Ray r1{ PVpair{ Point4(-2.0, 0.0, 0.0) , Vector4(0.2673, 0.5345, 0.8018) } };
+		r1.intersect(&c1);
+		EXPECT_TRUE(r1.m_intersections.size() == 0) << "Cube intersection bad";
+
+		Cube c2;
+		Ray r2{ PVpair{ Point4(0.0, -2.0, 0.0) , Vector4(0.8018, 0.2673, 0.5345) } };
+		r2.intersect(&c2);
+		EXPECT_TRUE(r2.m_intersections.size() == 0) << "Cube intersection bad";
+
+		Cube c3;
+		Ray r3{ PVpair{ Point4(0.0, 0.0, -2.0) , Vector4(0.5345, 0.8018, 0.2673) } };
+		r3.intersect(&c3);
+		EXPECT_TRUE(r3.m_intersections.size() == 0) << "Cube intersection bad";
+
+		Cube c4;
+		Ray r4{ PVpair{ Point4(2.0, 0.0, 2.0) , Vector4(0.0, 0.0, -1.0) } };
+		r4.intersect(&c4);
+		EXPECT_TRUE(r4.m_intersections.size() == 0) << "Cube intersection bad";
+
+		Cube c5;
+		Ray r5{ PVpair{ Point4(0.0, 2.0, 2.0) , Vector4(0.0, -1.0, 0.0) } };
+		r5.intersect(&c5);
+		EXPECT_TRUE(r5.m_intersections.size() == 0) << "Cube intersection bad";
+
+		Cube c6;
+		Ray r6{ PVpair{ Point4(2.0, 2.0, 0.0) , Vector4(-1.0, 0.0, 0.0) } };
+		r6.intersect(&c6);
+		EXPECT_TRUE(r6.m_intersections.size() == 0) << "Cube intersection bad";
+	}
+
+	TEST(CubeTest, HandlesNormal)
+	{
+		Cube c1;
+		Point4 p1{ 1.0, 0.5, -0.8 };
+		Vector4 n1 = c1.normal_at_local(p1);
+		EXPECT_TRUE(n1 == Vector4(1.0, 0.0, 0.0)) << "Cube normal bad";
+
+		Cube c2;
+		Point4 p2{ -1.0, -0.2, 0.9 };
+		Vector4 n2 = c2.normal_at_local(p2);
+		EXPECT_TRUE(n2 == Vector4(-1.0, 0.0, 0.0)) << "Cube normal bad";
+
+		Cube c3;
+		Point4 p3{ -0.4, 1.0, -0.1 };
+		Vector4 n3 = c3.normal_at_local(p3);
+		EXPECT_TRUE(n3 == Vector4(0.0, 1.0, 0.0)) << "Cube normal bad";
+
+		Cube c4;
+		Point4 p4{ 0.3, -1.0, -0.7 };
+		Vector4 n4 = c4.normal_at_local(p4);
+		EXPECT_TRUE(n4 == Vector4(0.0, -1.0, 0.0)) << "Cube normal bad";
+
+		Cube c5;
+		Point4 p5{ -0.6, 0.3, 1.0 };
+		Vector4 n5 = c5.normal_at_local(p5);
+		EXPECT_TRUE(n5 == Vector4(0.0, 0.0, 1.0)) << "Cube normal bad";
+
+		Cube c6;
+		Point4 p6{ 0.4, 0.4, -1.0 };
+		Vector4 n6 = c6.normal_at_local(p6);
+		EXPECT_TRUE(n6 == Vector4(0.0, 0.0, -1.0)) << "Cube normal bad";
+
+		Cube c7;
+		Point4 p7{ 1.0, 1.0, 1.0 };
+		Vector4 n7 = c7.normal_at_local(p7);
+		EXPECT_TRUE(n7 == Vector4(1.0, 0.0, 0.0)) << "Cube normal bad";
+
+		Cube c8;
+		Point4 p8{ -1.0, -1.0, -1.0 };
+		Vector4 n8 = c8.normal_at_local(p8);
+		EXPECT_TRUE(n8 == Vector4(-1.0, 0.0, 0.0)) << "Cube normal bad";
+	}
+}
+
+namespace Cylinders
+{
+	TEST(CylinderTest, HandlesNoIntersection)
+	{
+		Cylinder c1;
+		Ray r1{ PVpair{ Point4(1.0, 0.0, 0.0) , Vector4(0.0, 1.0, 0.0) } };
+		r1.intersect(&c1);
+		EXPECT_TRUE(r1.m_intersections.size() == 0) << "Cylinder intersection bad";
+
+		Cylinder c2;
+		Ray r2{ PVpair{ Point4(0.0, 0.0, 0.0) , Vector4(0.0, 1.0, 0.0) } };
+		r2.intersect(&c2);
+		EXPECT_TRUE(r2.m_intersections.size() == 0) << "Cylinder intersection bad";
+
+		Cylinder c3;
+		Ray r3{ PVpair{ Point4(0.0, 0.0, -5.0) , Vector4(1.0, 1.0, 1.0) } };
+		r3.intersect(&c3);
+		EXPECT_TRUE(r3.m_intersections.size() == 0) << "Cylinder intersection bad";
+	}
+
+	TEST(CylinderTest, HandlesIntersection)
+	{
+		Cylinder c1;
+		Ray r1{ PVpair{ Point4(1.0, 0.0, -5.0) , Vector4(0.0, 0.0, 1.0) } };
+		r1.intersect(&c1);
+		EXPECT_TRUE(is_equal(r1.m_intersections[0].m_time, 5.0)) << "Cylinder intersection bad";
+		EXPECT_TRUE(is_equal(r1.m_intersections[1].m_time, 5.0)) << "Cylinder intersection bad";
+
+		Cylinder c2;
+		Ray r2{ PVpair{ Point4(0.0, 0.0, -5.0) , Vector4(0.0, 0.0, 1.0) } };
+		r2.intersect(&c2);
+		EXPECT_TRUE(is_equal(r2.m_intersections[0].m_time, 4.0)) << "Cylinder intersection bad";
+		EXPECT_TRUE(is_equal(r2.m_intersections[1].m_time, 6.0)) << "Cylinder intersection bad";
+
+		Cylinder c3;
+		Ray r3{ PVpair{ Point4(0.5, 0.0, -5.0) , normalize(Vector4(0.1, 1.0, 1.0)) } };
+		r3.intersect(&c3);
+		EXPECT_TRUE(is_equal(r3.m_intersections[0].m_time, 6.80798)) << "Cylinder intersection bad";
+		EXPECT_TRUE(is_equal(r3.m_intersections[1].m_time, 7.08872)) << "Cylinder intersection bad";
+	}
+
+	TEST(CylinderTest, HandlesNormal)
+	{
+		Cylinder c1;
+		Point4 p1{ 1.0, 0.0, 0.0 };
+		Vector4 n1 = c1.normal_at_local(p1);
+		EXPECT_TRUE(n1 == Vector4(1.0, 0.0, 0.0)) << "Cylinder normal bad";
+
+		Cylinder c2;
+		Point4 p2{ 0.0, 5.0, -1.0 };
+		Vector4 n2 = c2.normal_at_local(p2);
+		EXPECT_TRUE(n2 == Vector4(0.0, 0.0, -1.0)) << "Cylinder normal bad";
+
+		Cylinder c3;
+		Point4 p3{ 0.0, -2.0, 1.0 };
+		Vector4 n3 = c3.normal_at_local(p3);
+		EXPECT_TRUE(n3 == Vector4(0.0, 0.0, 1.0)) << "Cylinder normal bad";
+
+		Cylinder c4;
+		Point4 p4{ -1.0, 1.0, 0.0 };
+		Vector4 n4 = c4.normal_at_local(p4);
+		EXPECT_TRUE(n4 == Vector4(-1.0, 0.0, 0.0)) << "Cylinder normal bad";
+	}
+
+	TEST(CylinderTest, HandlesCylinderLimits)
+	{
+		Cylinder c1;
+		c1.m_minimum = 1.0;
+		c1.m_maximum = 2.0;
+		Ray r1{ PVpair{ Point4(0.0, 1.5, 0.0) , normalize(Vector4(0.1, 1.0, 0.0)) } };
+		r1.intersect(&c1);
+		EXPECT_TRUE(r1.m_intersections.size() == 0) << "Cylinder intersection bad";
+
+		Ray r2{ PVpair{ Point4(0.0, 3.0, -5.0) , normalize(Vector4(0.0, 0.0, 1.0)) } };
+		r2.intersect(&c1);
+		EXPECT_TRUE(r2.m_intersections.size() == 0) << "Cylinder intersection bad";
+
+		Ray r3{ PVpair{ Point4(0.0, 0.0, -5.0) , normalize(Vector4(0.0, 0.0, 1.0)) } };
+		r3.intersect(&c1);
+		EXPECT_TRUE(r3.m_intersections.size() == 0) << "Cylinder intersection bad";
+
+		Ray r4{ PVpair{ Point4(0.0, 2.0, -5.0) , normalize(Vector4(0.0, 0.0, 1.0)) } };
+		r4.intersect(&c1);
+		EXPECT_TRUE(r4.m_intersections.size() == 0) << "Cylinder intersection bad";
+
+		Ray r5{ PVpair{ Point4(0.0, 1.0, -5.0) , normalize(Vector4(0.0, 0.0, 1.0)) } };
+		r5.intersect(&c1);
+		EXPECT_TRUE(r5.m_intersections.size() == 0) << "Cylinder intersection bad";
+
+		Ray r6{ PVpair{ Point4(0.0, 1.5, -2.0) , normalize(Vector4(0.0, 0.0, 1.0)) } };
+		r6.intersect(&c1);
+		EXPECT_TRUE(r6.m_intersections.size() == 2) << "Cylinder intersection bad";
+	}
+
+	TEST(CylinderTest, HandlesClosedCylinderLimits)
+	{
+		Cylinder c1;
+		c1.m_minimum = 1.0;
+		c1.m_maximum = 2.0;
+		c1.m_closed = true;
+		Ray r1{ PVpair{ Point4(0.0, 3.0, 0.0) , normalize(Vector4(0.0, -1.0, 0.0)) } };
+		r1.intersect(&c1);
+		EXPECT_TRUE(r1.m_intersections.size() == 2) << "Cylinder intersection bad";
+
+		Ray r2{ PVpair{ Point4(0.0, 3.0, -2.0) , normalize(Vector4(0.0, -1.0, 2.0)) } };
+		r2.intersect(&c1);
+		EXPECT_TRUE(r2.m_intersections.size() == 2) << "Cylinder intersection bad";
+
+		Ray r3{ PVpair{ Point4(0.0, 4.0, -2.0) , normalize(Vector4(0.0, -1.0, 1.0)) } };
+		r3.intersect(&c1);
+		EXPECT_TRUE(r3.m_intersections.size() == 2) << "Cylinder intersection bad";
+
+		Ray r4{ PVpair{ Point4(0.0, 0.0, -2.0) , normalize(Vector4(0.0, 1.0, 2.0)) } };
+		r4.intersect(&c1);
+		EXPECT_TRUE(r4.m_intersections.size() == 2) << "Cylinder intersection bad";
+
+		Ray r5{ PVpair{ Point4(0.0, 0.0, -2.0) , normalize(Vector4(0.0, 1.0, 1.0)) } };
+		r5.intersect(&c1);
+		EXPECT_TRUE(r5.m_intersections.size() == 2) << "Cylinder intersection bad";
+	}
+
+	TEST(CylinderTest, HandlesClosedCylinderNormals)
+	{
+		Cylinder c1;
+		c1.m_minimum = 1.0;
+		c1.m_maximum = 2.0;
+		c1.m_closed = true;
+		Point4 p1{ 0.0, 1.0, 0.0 };
+		Vector4 n1 = c1.normal_at_local(p1);
+		EXPECT_TRUE(n1 == Vector4(0.0, -1.0, 0.0)) << "Cylinder normal bad";
+
+		Point4 p2{ 0.5, 1.0, 0.0 };
+		Vector4 n2 = c1.normal_at_local(p2);
+		EXPECT_TRUE(n2 == Vector4(0.0, -1.0, 0.0)) << "Cylinder normal bad";
+
+		Point4 p3{ 0.0, 1.0, 0.5 };
+		Vector4 n3 = c1.normal_at_local(p3);
+		EXPECT_TRUE(n3 == Vector4(0.0, -1.0, 0.0)) << "Cylinder normal bad";
+
+		Point4 p4{ 0.0, 2.0, 0.0 };
+		Vector4 n4 = c1.normal_at_local(p4);
+		EXPECT_TRUE(n4 == Vector4(0.0, 1.0, 0.0)) << "Cylinder normal bad";
+
+		Point4 p5{ 0.5, 2.0, 0.0 };
+		Vector4 n5 = c1.normal_at_local(p5);
+		EXPECT_TRUE(n5 == Vector4(0.0, 1.0, 0.0)) << "Cylinder normal bad";
+
+		Point4 p6{ 0.0, 2.0, 0.5 };
+		Vector4 n6 = c1.normal_at_local(p6);
+		EXPECT_TRUE(n6 == Vector4(0.0, 1.0, 0.0)) << "Cylinder normal bad";
+	}
+}
+
+namespace Cones
+{
+	TEST(ConeTest, HandlesConeIntersection)
+	{
+		Cone c1;
+		Ray r1{ PVpair{ Point4(0.0, 0.0, -5.0) , normalize(Vector4(0.0, 0.0, 1.0)) } };
+		r1.intersect(&c1);
+		EXPECT_TRUE(r1.m_intersections.size() == 2) << "Cone intersection bad";
+		EXPECT_TRUE(is_equal(r1.m_intersections[0].m_time, 5.0)) << "Cone intersection bad";
+		EXPECT_TRUE(is_equal(r1.m_intersections[1].m_time, 5.0)) << "Cone intersection bad";
+
+		Cone c2;
+		Ray r2{ PVpair{ Point4(0.0, 0.0, -5.0) , normalize(Vector4(1.0, 1.0, 1.0)) } };
+		r2.intersect(&c2);
+		EXPECT_TRUE(r2.m_intersections.size() == 2) << "Cone intersection bad";
+		EXPECT_TRUE(is_equal(r2.m_intersections[0].m_time, 8.66025)) << "Cone intersection bad";
+		EXPECT_TRUE(is_equal(r2.m_intersections[1].m_time, 8.66025)) << "Cone intersection bad";
+
+		Cone c3;
+		Ray r3{ PVpair{ Point4(1.0, 1.0, -5.0) , normalize(Vector4(-0.5, -1.0, 1.0)) } };
+		r3.intersect(&c3);
+		EXPECT_TRUE(r3.m_intersections.size() == 2) << "Cone intersection bad";
+		EXPECT_TRUE(is_equal(r3.m_intersections[0].m_time, 4.55006)) << "Cone intersection bad";
+		EXPECT_TRUE(is_equal(r3.m_intersections[1].m_time, 49.44994)) << "Cone intersection bad";
+	
+		Cone c4;
+		Ray r4{ PVpair{ Point4(0.0, 0.0, -1.0) ,normalize(Vector4(0.0, 1.0, 1.0)) } };
+		r4.intersect(&c4);
+		EXPECT_TRUE(r4.m_intersections.size() == 1) << "Cone intersection bad";
+		EXPECT_TRUE(is_equal(r4.m_intersections[0].m_time, 0.35355)) << "Cone intersection bad";
+	}
+
+	TEST(ConeTest, HandlesClosedCylinderCone)
+	{
+		Cone c1;
+		c1.m_minimum = -0.5;
+		c1.m_maximum = 0.5;
+		c1.m_closed = true;
+		Ray r1{ PVpair{ Point4(0.0, 0.0, -5.0) , normalize(Vector4(0.0, 1.0, 0.0)) } };
+		r1.intersect(&c1);
+		EXPECT_TRUE(r1.m_intersections.size() == 0) << "Cone intersection bad";
+
+		Ray r2{ PVpair{ Point4(0.0, 0.0, -0.25) , normalize(Vector4(0.0, 1.0, 1.0)) } };
+		r2.intersect(&c1);
+		EXPECT_TRUE(r2.m_intersections.size() == 2) << "Cone intersection bad";
+
+		Ray r3{ PVpair{ Point4(0.0, 0.0, -0.25) , normalize(Vector4(0.0, 1.0, 0.0)) } };
+		r3.intersect(&c1);
+		EXPECT_TRUE(r3.m_intersections.size() == 4) << "Cone intersection bad";
+	}
+
+	TEST(ConeTest, HandlesClosedCylinderNormals)
+	{
+		Cone c1;
+		Point4 p1{ 0.0, 0.0, 0.0 };
+		Vector4 n1 = c1.normal_at_local(p1);
+		EXPECT_TRUE(n1 == Vector4(0.0, 0.0, 0.0)) << "Cone normal bad";
+
+		Point4 p2{ 1.0, 1.0, 1.0 };
+		Vector4 n2 = c1.normal_at_local(p2);
+		EXPECT_TRUE(n2 == Vector4(1.0, -std::sqrt(2.0), 1.0)) << "Cone normal bad";
+
+		Point4 p3{ -1.0, -1.0, 0.0 };
+		Vector4 n3 = c1.normal_at_local(p3);
+		EXPECT_TRUE(n3 == Vector4(-1.0, 1.0, 0.0)) << "Cone normal bad";
+	}
+}
+
+namespace Groups
+{
+	TEST(GroupTest, HandlesDefaultGroup)
+	{
+		Group* g1 = new Group;
+
+		EXPECT_TRUE(g1->m_transform == i4x4) << "Default Group bad";
+		EXPECT_TRUE(g1->m_children.size() == 0) << "Default Group bad";
+
+		delete g1;
+	}
+
+	TEST(GroupTest, HandlesShapeDefaultParent)
+	{
+		TestShape ts1;
+		EXPECT_TRUE(ts1.m_parent == nullptr) << "Default shape parent bad";
+	}
+
+	TEST(GroupTest, HandlesAddChild)
+	{
+		Group g1;
+		TestShape ts1;
+		g1.add_child(ts1);
+
+		EXPECT_TRUE(g1.m_children.size() == 1) << "Add child bad";
+
+		Group::delete_track_nodes();
+	}
+
+	TEST(GroupTest, HandlesIntesrsectEmpty)
+	{
+		Group g1;
+		Ray r1{ PVpair{ Point4(0.0, 0.0, 0.0), Vector4(0.0, 0.0, 1.0) } };
+		r1.intersect(&g1);
+
+		EXPECT_TRUE(r1.m_intersections.size() == 0) << "Group empty intersection bad";
+	}
+
+	TEST(GroupTest, HandlesIntesrsect)
+	{
+		World w1;
+		Group g1;
+		w1.add_object(g1);
+		Group* p_g1 = dynamic_cast<Group*>(w1.m_shapes[0]);
+
+		Sphere s1;
+		Sphere s2;
+		s2.m_transform = translation(0.0, 0.0, -3.0);
+		Sphere s3;
+		s3.m_transform = translation(5.0, 0.0, 0.0);
+		p_g1->add_child(s1);
+		p_g1->add_child(s2);
+		p_g1->add_child(s3);
+
+		Ray r1{ PVpair{ Point4(0.0, 0.0, -5.0), Vector4(0.0, 0.0, 1.0) } };
+		intersect(w1, r1);
+
+		EXPECT_TRUE(r1.m_intersections.size() == 4) << "Group intersection bad";
+	
+		Group::delete_track_nodes();
+	}
+
+	TEST(GroupTest, HandlesGroupTransform)
+	{
+		Group g1;
+		g1.m_transform = scaling(2.0, 2.0, 2.0);
+		Sphere s1;
+		s1.m_transform = translation(5.0, 0.0, 0.0);
+
+		g1.add_child(s1);
+
+		Ray r1{ PVpair{ Point4(10.0, 0.0, -10.0), Vector4(0.0, 0.0, 1.0) } };
+		r1.intersect(&g1);
+
+		EXPECT_TRUE(r1.m_intersections.size() == 2) << "Group intersection bad";
+	
+		Group::delete_track_nodes();
+	}
+
+	TEST(GroupTest, HandlesGroupNormal)
+	{
+		World w;
+
+		Group g1;
+		g1.m_transform = rotation(0.0, DEG_90, 0.0);
+
+		w.add_object(g1);
+		Group* p_g1 = dynamic_cast<Group*>(w.m_shapes[0]);
+
+		Group g2;
+		g2.m_transform = scaling(1.0, 2.0, 3.0);
+
+		p_g1->add_child(g2);
+		Group* p_g2 = dynamic_cast<Group*>(p_g1->m_children[0]);
+
+		Sphere s1;
+		s1.m_transform = translation(5.0, 0.0, 0.0);
+
+		p_g2->add_child(s1);
+
+		Ray r1{ PVpair{ Point4(0.0 ,0.0 ,-10.0), Vector4(0.3543, 0.2362, 0.9048) } };
+
+		intersect(w, r1);
+		CompData cd = r1.get_comp_data();
+		Vector4 n1{ r1.normal_at(cd) };
+
+		EXPECT_TRUE(n1 == Vector4(0.28559, 0.42839, -0.85726)) << "Group intersection bad";
+
+		Group::delete_track_nodes();
+	}
+
+}
+
+namespace Triangles
+{
+	TEST(TriangleTest, HandlesAssignment)
+	{
+		Triangle tr1{ Point4(0.0, 1.0, 0.0), Point4(-1.0, 0.0, 0.0), Point4(1.0, 0.0, 0.0) };
+		EXPECT_TRUE(tr1.m_pt1 == Point4(0.0, 1.0, 0.0)) << "Triangle assignment bad";
+		EXPECT_TRUE(tr1.m_pt2 == Point4(-1.0, 0.0, 0.0)) << "Triangle assignment bad";
+		EXPECT_TRUE(tr1.m_pt3 == Point4(1.0, 0.0, 0.0)) << "Triangle assignment bad";
+		EXPECT_TRUE(tr1.m_e1 == Vector4(-1.0, -1.0, 0.0)) << "Triangle assignment bad";
+		EXPECT_TRUE(tr1.m_e2 == Vector4(1.0, -1.0, 0.0)) << "Triangle assignment bad";
+		EXPECT_TRUE(tr1.m_normal == Vector4(0.0, 0.0, -1.0)) << "Triangle assignment bad";
+	}
+
+	TEST(TriangleTest, HandlesNormal)
+	{
+		Triangle tr1{ Point4(0.0, 1.0, 0.0), Point4(-1.0, 0.0, 0.0), Point4(1.0, 0.0, 0.0) };
+		EXPECT_TRUE(tr1.normal_at_local(Point4(0.0, 0.5, 0.0)) == tr1.m_normal) << "Triangle normal bad";
+		EXPECT_TRUE(tr1.normal_at_local(Point4(-0.5, 0.75, 0.0)) == tr1.m_normal) << "Triangle normal bad";
+		EXPECT_TRUE(tr1.normal_at_local(Point4(0.5, 0.25, 0.0)) == tr1.m_normal) << "Triangle normal bad";
+	}
+
+	TEST(TriangleTest, HandlesMissParallel)
+	{
+		Triangle tr1{ Point4(0.0, 1.0, 0.0), Point4(-1.0, 0.0, 0.0), Point4(1.0, 0.0, 0.0) };
+		Ray r1{ PVpair{ Point4(0.0, -1.0, -2.0), Vector4(0.0, 1.0, 0.0) } };
+		World w1;
+		w1.add_object(tr1);
+		intersect(w1, r1);
+		EXPECT_TRUE(r1.m_intersections.size() == 0) << "Triangle intersection bad";
+	}
+
+	TEST(TriangleTest, HandlesMissEdge1)
+	{
+		Triangle tr1{ Point4(0.0, 1.0, 0.0), Point4(-1.0, 0.0, 0.0), Point4(1.0, 0.0, 0.0) };
+		Ray r1{ PVpair{ Point4(1.0, 1.0, -2.0), Vector4(0.0, 0.0, 1.0) } };
+		World w1;
+		w1.add_object(tr1);
+		intersect(w1, r1);
+		EXPECT_TRUE(r1.m_intersections.size() == 0) << "Triangle intersection bad";
+	}
+
+	TEST(TriangleTest, HandlesMissEdge2)
+	{
+		Triangle tr1{ Point4(0.0, 1.0, 0.0), Point4(-1.0, 0.0, 0.0), Point4(1.0, 0.0, 0.0) };
+		Ray r1{ PVpair{ Point4(-1.0, 1.0, -2.0), Vector4(0.0, 0.0, 1.0) } };
+		World w1;
+		w1.add_object(tr1);
+		intersect(w1, r1);
+		EXPECT_TRUE(r1.m_intersections.size() == 0) << "Triangle intersection bad";
+	}
+
+	TEST(TriangleTest, HandlesMissEdge3)
+	{
+		Triangle tr1{ Point4(0.0, 1.0, 0.0), Point4(-1.0, 0.0, 0.0), Point4(1.0, 0.0, 0.0) };
+		Ray r1{ PVpair{ Point4(0.0, -1.0, -2.0), Vector4(0.0, 0.0, 1.0) } };
+		World w1;
+		w1.add_object(tr1);
+		intersect(w1, r1);
+		EXPECT_TRUE(r1.m_intersections.size() == 0) << "Triangle intersection bad";
+	}
+
+	TEST(TriangleTest, HandlesIntersection)
+	{
+		Triangle tr1{ Point4(0.0, 1.0, 0.0), Point4(-1.0, 0.0, 0.0), Point4(1.0, 0.0, 0.0) };
+		Ray r1{ PVpair{ Point4(0.0, 0.5, -2.0), Vector4(0.0, 0.0, 1.0) } };
+		World w1;
+		w1.add_object(tr1);
+		intersect(w1, r1);
+		EXPECT_TRUE(r1.m_intersections.size() == 1) << "Triangle intersection bad";
+		EXPECT_TRUE(r1.m_intersections[0].m_time == 2.0) << "Triangle intersection bad";
 	}
 }
